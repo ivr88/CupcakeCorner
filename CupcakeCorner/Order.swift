@@ -25,7 +25,7 @@ class Order: Codable  {
     var zip = ""
     
     var hasValidAddress: Bool {
-        if name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty {
+        if name.isEmpty || name.hasSuffix("") || streetAddress.isEmpty || streetAddress.hasSuffix("") || city.isEmpty || city.hasSuffix("") || zip.isEmpty || zip.hasSuffix("") {
             return false
         }
 

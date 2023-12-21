@@ -5,6 +5,9 @@ struct CheckoutView: View {
     @State private var confirmationMessage = ""
     @State private var showingConfirmation = false
     
+    @State private var alertMessage = "No connection"
+    @State private var alertShow = false
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -36,6 +39,11 @@ struct CheckoutView: View {
         } message: {
             Text(confirmationMessage)
         }
+        .alert("Warning!", isPresented: $alertShow) {
+            Button("Ok") { }
+        } message: {
+            Text(alertMessage)
+        }
     }
     
     func placeOrder() async {
@@ -48,13 +56,14 @@ struct CheckoutView: View {
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        
+       
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
             let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
             confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
             showingConfirmation = true
         } catch {
+            alertShow = true
             print("Checkout failed: \(error.localizedDescription)")
         }
     }
