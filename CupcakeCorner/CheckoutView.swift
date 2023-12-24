@@ -5,9 +5,6 @@ struct CheckoutView: View {
     @State private var confirmationMessage = ""
     @State private var showingConfirmation = false
     
-    @State private var alertMessage = "No connection"
-    @State private var alertShow = false
-    
     var body: some View {
         ScrollView {
             VStack {
@@ -39,10 +36,10 @@ struct CheckoutView: View {
         } message: {
             Text(confirmationMessage)
         }
-        .alert("Warning!", isPresented: $alertShow) {
+        .alert("Warning!", isPresented: $showingConfirmation) {
             Button("Ok") { }
         } message: {
-            Text(alertMessage)
+            Text(confirmationMessage)
         }
     }
     
@@ -63,7 +60,8 @@ struct CheckoutView: View {
             confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
             showingConfirmation = true
         } catch {
-            alertShow = true
+            showingConfirmation = true
+            confirmationMessage = "No connection"
             print("Checkout failed: \(error.localizedDescription)")
         }
     }
